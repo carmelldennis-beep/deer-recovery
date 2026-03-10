@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Drone Recovery — Thermal Deer Recovery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #060904;
+      --surface: #0D140A;
+      --orange: #E07318;
+      --amber: #C49840;
+      --text: #EDE9E2;
+      --muted: #6B7A63;
+      --border: rgba(255,255,255,0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Scan-line texture */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.025) 2px,
+        rgba(0,0,0,0.025) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,9,4,0.92) 0%, transparent 100%);
+      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav.scrolled {
+      background: rgba(6,9,4,0.97);
+      backdrop-filter: blur(14px);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-wrap {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(224,115,24,0.3);
+    }
+
+    .logo-wrap img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+    }
+
+    .nav-text .t1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 19px;
+      letter-spacing: 0.07em;
+      color: var(--text);
+      line-height: 1;
+      display: block;
+    }
+
+    .nav-text .t2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--orange);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(237,233,226,0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--orange); }
+
+    .nav-cta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #060904;
+      background: var(--orange);
+      padding: 10px 22px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 16px rgba(224,115,24,0.3);
+    }
+
+    .nav-cta:hover { background: #c96214; transform: translateY(-1px); }
+    .nav-cta:active { transform: translateY(0); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 680px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 48px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('/Deer%20Recovery/1000043004.jpg');
+      background-size: cover;
+      background-position: center 35%;
+      animation: heroZoom 18s ease-out forwards;
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1.06); }
+      to   { transform: scale(1.00); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg,
+          rgba(6,9,4,0.45) 0%,
+          rgba(6,9,4,0.05) 38%,
+          rgba(6,9,4,0.82) 72%,
+          rgba(6,9,4,1) 100%),
+        linear-gradient(90deg,
+          rgba(6,9,4,0.65) 0%,
+          transparent 55%);
+    }
+
+    /* Radial vignette */
+    .hero-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(6,9,4,0.35) 100%);
+    }
+
+    /* HUD corners */
+    .hud {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+    }
+    .hud-tl { top: 88px; left: 48px; border-top: 1.5px solid rgba(224,115,24,0.55); border-left: 1.5px solid rgba(224,115,24,0.55); }
+    .hud-tr { top: 88px; right: 48px; border-top: 1.5px solid rgba(224,115,24,0.55); border-right: 1.5px solid rgba(224,115,24,0.55); }
+    .hud-bl { bottom: 70px; left: 48px; border-bottom: 1.5px solid rgba(224,115,24,0.55); border-left: 1.5px solid rgba(224,115,24,0.55); }
+    .hud-br { bottom: 70px; right: 48px; border-bottom: 1.5px solid rgba(224,115,24,0.55); border-right: 1.5px solid rgba(224,115,24,0.55); }
+
+    /* Thermal crosshair */
+    .crosshair {
+      position: absolute;
+      top: 42%;
+      right: 10%;
+      width: 72px;
+      height: 72px;
+      opacity: 0.2;
+    }
+    .crosshair::before, .crosshair::after {
+      content: '';
+      position: absolute;
+      background: var(--orange);
+    }
+    .crosshair::before { width: 100%; height: 1px; top: 50%; transform: translateY(-50%); }
+    .crosshair::after  { width: 1px; height: 100%; left: 50%; transform: translateX(-50%); }
+    .crosshair-ring {
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--orange);
+      border-radius: 50%;
+    }
+    .crosshair-ring-2 {
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(224,115,24,0.5);
+      border-radius: 50%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.7s ease 0.3s forwards;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 30px;
+      height: 1.5px;
+      background: var(--orange);
+    }
+
+    .hero-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(68px, 9.5vw, 136px);
+      line-height: 0.9;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(28px);
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+
+    .hero-h1 .accent { color: var(--orange); }
+
+    .hero-p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(237,233,226,0.65);
+      max-width: 460px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.7s ease 0.7s forwards;
+    }
+
+    .hero-btns {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.7s ease 0.9s forwards;
+    }
+
+    .btn-primary {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #060904;
+      background: var(--orange);
+      padding: 15px 34px;
+      border-radius: 2px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 28px rgba(224,115,24,0.38);
+    }
+
+    .btn-primary:hover { background: #c96214; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(224,115,24,0.48); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(237,233,226,0.65);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .btn-ghost:hover { color: var(--text); }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap {
+      background: var(--orange);
+      padding: 11px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      animation: marquee 22s linear infinite;
+    }
+
+    .marquee-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(6,9,4,0.85);
+      padding: 0 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(6,9,4,0.4);
+      flex-shrink: 0;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── SECTION BASE ─── */
+    .sec { padding: 96px 48px; }
+
+    .sec-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sec-label::before {
+      content: '';
+      width: 24px;
+      height: 1.5px;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .sec-h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(44px, 5.5vw, 76px);
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    /* ─── SERVICES ─── */
+    #services {
+      background: var(--surface);
+      position: relative;
+    }
+
+    #services::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 25%, var(--border) 75%, transparent);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+      border: 1px solid var(--border);
+    }
+
+    .svc-card {
+      background: rgba(13,20,10,0.85);
+      padding: 44px 38px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .svc-card:hover { background: rgba(224,115,24,0.055); }
+
+    .svc-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--orange);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .svc-card:hover::after { transform: scaleX(1); }
+
+    .svc-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      line-height: 1;
+      color: rgba(224,115,24,0.08);
+      position: absolute;
+      top: 20px;
+      right: 28px;
+    }
+
+    .svc-icon {
+      width: 44px;
+      height: 44px;
+      color: var(--orange);
+      margin-bottom: 22px;
+    }
+
+    .svc-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.03em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .svc-desc {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    /* ─── TECH SPLIT ─── */
+    #tech {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      padding: 96px 48px;
+      background: var(--bg);
+    }
+
+    .tech-img-wrap {
+      position: relative;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .tech-img-wrap img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+
+    .tech-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(224,115,24,0.12) 0%, transparent 50%);
+    }
+
+    .tech-img-border {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(224,115,24,0.2);
+      border-radius: 2px;
+    }
+
+    .tech-specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .spec {
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      background: rgba(224,115,24,0.04);
+    }
+
+    .spec-l {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .spec-v {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ─── GALLERY ─── */
+    #gallery {
+      background: #040603;
+      padding: 96px 0 0;
+    }
+
+    .gallery-header {
+      padding: 0 48px 44px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr 1fr;
+      height: 340px;
+      gap: 3px;
+    }
+
+    .gal-item {
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .gal-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.65s ease;
+    }
+
+    .gal-item:hover img { transform: scale(1.05); }
+
+    .gal-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(6,9,4,0.55) 0%, transparent 55%);
+    }
+
+    /* ─── VIDEO ─── */
+    #video-section {
+      background: #060904;
+      padding: 96px 48px;
+      position: relative;
+    }
+
+    #video-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 25%, var(--border) 75%, transparent);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      margin-top: 52px;
+    }
+
+    .video-item {
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .video-item video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 16/9;
+    }
+
+    .video-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(224,115,24,0.15);
+      pointer-events: none;
+    }
+
+    /* Play button overlay */
+    .video-play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(6,9,4,0.35);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .video-play-btn:hover { background: rgba(6,9,4,0.15); }
+
+    .video-play-btn.hidden { display: none; }
+
+    .play-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: rgba(224,115,24,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 0 0 12px rgba(224,115,24,0.12);
+    }
+
+    .video-play-btn:hover .play-circle {
+      transform: scale(1.08);
+      background: var(--orange);
+    }
+
+    .play-circle svg {
+      margin-left: 4px;
+    }
+
+    @media (max-width: 900px) {
+      #video-section { padding: 64px 20px; }
+      .video-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── PRICING ─── */
+    #pricing {
+      background: var(--surface);
+      padding: 96px 48px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+    }
+
+    .p-card {
+      background: rgba(13,20,10,0.9);
+      border: 1px solid var(--border);
+      padding: 44px 34px;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+
+    .p-card.featured {
+      border-color: rgba(224,115,24,0.5);
+      background: rgba(224,115,24,0.04);
+    }
+
+    .p-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -1px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--orange);
+      color: #060904;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      padding: 4px 16px;
+    }
+
+    .p-tier {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 6px;
+    }
+
+    .p-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .p-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .p-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin-bottom: 34px;
+    }
+
+    .p-features li {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(237,233,226,0.72);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.4;
+    }
+
+    .p-features li::before {
+      content: '';
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 7l4 4 6-6' stroke='%23E07318' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .p-cta {
+      display: block;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 13px;
+      border: 1px solid var(--orange);
+      color: var(--orange);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .p-cta:hover, .p-card.featured .p-cta {
+      background: var(--orange);
+      color: #060904;
+    }
+
+    .pricing-note {
+      margin-top: 28px;
+      padding: 18px 22px;
+      background: rgba(224,115,24,0.05);
+      border-left: 2px solid rgba(224,115,24,0.5);
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 680px;
+    }
+
+    .pricing-note strong {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(237,233,226,0.5);
+    }
+
+    /* ─── CTA ─── */
+    #cta {
+      text-align: center;
+      padding: 120px 48px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cta::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(224,115,24,0.07) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 7vw, 100px);
+      line-height: 0.93;
+      color: var(--text);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .cta-h2 span { color: var(--orange); }
+
+    .cta-p {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 380px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .cta-phone {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 44px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 6px;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .cta-phone:hover { color: var(--orange); }
+
+    .cta-social {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      position: relative;
+    }
+
+    .cta-btns {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #030402;
+      border-top: 1px solid var(--border);
+      padding: 36px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-logo-img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #fff;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-logo-img img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      color: rgba(237,233,226,0.25);
+    }
+
+    .footer-copy {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(237,233,226,0.18);
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.18s; }
+    .reveal-d3 { transition-delay: 0.28s; }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 0 20px 56px; }
+      .hud, .crosshair { display: none; }
+      .sec { padding: 64px 20px; }
+      #tech { grid-template-columns: 1fr; gap: 40px; padding: 64px 20px; }
+      .services-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; height: auto; }
+      .gal-item { height: 220px; }
+      .gallery-header { padding: 0 20px 36px; }
+      #gallery { padding-top: 64px; }
+      #pricing, #cta { padding: 64px 20px; }
+      footer { flex-direction: column; gap: 14px; text-align: center; padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="mainNav">
+    <a href="#home" class="nav-logo">
+      <div class="logo-wrap">
+        <img src="/Deer%20Recovery/1000043002.jpg" alt="Advanced Drone Recovery logo">
+      </div>
+      <div class="nav-text">
+        <span class="t1">Advanced</span>
+        <span class="t2">Drone Recovery</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#tech">Technology</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <a href="tel:8123746987" class="nav-cta">Call (812) 374-6987</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hud hud-tl"></div>
+    <div class="hud hud-tr"></div>
+    <div class="hud hud-bl"></div>
+    <div class="hud hud-br"></div>
+
+    <div class="crosshair">
+      <div class="crosshair-ring"></div>
+      <div class="crosshair-ring-2"></div>
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-badge">Thermal Drone Recovery &mdash; DJI M30T</p>
+      <h1 class="hero-h1">
+        Find Your Deer.<br>
+        <span class="accent">Every Time.</span>
+      </h1>
+      <p class="hero-p">Advanced thermal imaging deployed the moment the shot hits. We locate your harvest — day or night, any cover, any terrain.</p>
+      <div class="hero-btns">
+        <a href="tel:8123746987" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call Now
+        </a>
+        <a href="#services" class="btn-ghost">
+          Our Services
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Thermal Deer Recovery <span class="dot"></span> DJI M30T Drone <span class="dot"></span> Pet &amp; Livestock Search &amp; Rescue <span class="dot"></span> Deer Herd Census <span class="dot"></span> (812) 374-6987 <span class="dot"></span> @advanceddronerecovery <span class="dot"></span></span>
+      <span class="marquee-item">Thermal Deer Recovery <span class="dot"></span> DJI M30T Drone <span class="dot"></span> Pet &amp; Livestock Search &amp; Rescue <span class="dot"></span> Deer Herd Census <span class="dot"></span> (812) 374-6987 <span class="dot"></span> @advanceddronerecovery <span class="dot"></span></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="sec" id="services" style="background: var(--surface); position: relative;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border) 25%,var(--border) 75%,transparent);"></div>
+    <div class="reveal">
+      <p class="sec-label">What We Do</p>
+      <h2 class="sec-h2">Our Services</h2>
+    </div>
+    <div class="services-grid" style="margin-top:52px;">
+
+      <div class="svc-card reveal reveal-d1">
+        <span class="svc-num">01</span>
+        <svg class="svc-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <circle cx="22" cy="22" r="14"/>
+          <circle cx="22" cy="22" r="3" fill="currentColor" stroke="none"/>
+          <line x1="22" y1="4" x2="22" y2="10"/>
+          <line x1="22" y1="34" x2="22" y2="40"/>
+          <line x1="4" y1="22" x2="10" y2="22"/>
+          <line x1="34" y1="22" x2="40" y2="22"/>
+          <line x1="10.1" y1="10.1" x2="14.2" y2="14.2"/>
+          <line x1="29.8" y1="29.8" x2="33.9" y2="33.9"/>
+          <line x1="33.9" y1="10.1" x2="29.8" y2="14.2"/>
+          <line x1="14.2" y1="29.8" x2="10.1" y2="33.9"/>
+        </svg>
+        <h3 class="svc-title">Thermal Deer Recovery</h3>
+        <p class="svc-desc">Deploy our DJI M30T the moment your shot hits. Thermal heat signatures locate your harvest through dense cover, in complete darkness, at speed no ground search can match.</p>
+      </div>
+
+      <div class="svc-card reveal reveal-d2">
+        <span class="svc-num">02</span>
+        <svg class="svc-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <path d="M10 38 C10 28 18 22 22 20 C26 22 34 28 34 38"/>
+          <ellipse cx="22" cy="13" rx="6" ry="7"/>
+          <path d="M8 16 C4 18 4 26 8 28"/>
+          <path d="M36 16 C40 18 40 26 36 28"/>
+        </svg>
+        <h3 class="svc-title">Pet &amp; Livestock Search &amp; Rescue</h3>
+        <p class="svc-desc">Missing animals found faster from the air. We cover acres in minutes, detecting heat signatures through darkness and dense vegetation that ground searches simply cannot reach.</p>
+      </div>
+
+      <div class="svc-card reveal reveal-d3">
+        <span class="svc-num">03</span>
+        <svg class="svc-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <rect x="4" y="8" width="36" height="28" rx="2"/>
+          <line x1="4" y1="18" x2="40" y2="18"/>
+          <line x1="16" y1="8" x2="16" y2="36"/>
+          <circle cx="10" cy="13" r="2" fill="currentColor" stroke="none"/>
+          <circle cx="24" cy="26" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="30" cy="23" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="22" cy="30" r="1.5" fill="currentColor" stroke="none"/>
+        </svg>
+        <h3 class="svc-title">Deer Herd Census</h3>
+        <p class="svc-desc">Certified population surveys for landowners and hunters. Get total count, buck-to-doe ratios, interactive property maps, and optional buck photography — all in one flight.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TECH -->
+  <div id="tech">
+    <div class="tech-img-wrap reveal">
+      <img src="/Deer%20Recovery/1000043003.jpg" alt="Advanced Drone Recovery herd census flyer">
+      <div class="tech-img-border"></div>
+    </div>
+    <div>
+      <p class="sec-label reveal">The Technology</p>
+      <h2 class="sec-h2 reveal">Powered by<br>DJI M30T</h2>
+      <p class="reveal" style="font-size:15px;font-weight:300;line-height:1.8;color:var(--muted);margin-bottom:28px;">The DJI Matrice 30T is the same platform trusted by law enforcement, firefighters, and SAR teams worldwide. Its dual-sensor system captures real-time thermal and visible imagery simultaneously — giving us precise detection capability no matter the lighting, weather, or terrain.</p>
+      <div class="tech-specs reveal">
+        <div class="spec">
+          <div class="spec-l">Thermal</div>
+          <div class="spec-v">640×512 IR</div>
+        </div>
+        <div class="spec">
+          <div class="spec-l">Operation</div>
+          <div class="spec-v">Day &amp; Night</div>
+        </div>
+        <div class="spec">
+          <div class="spec-l">Platform</div>
+          <div class="spec-v">DJI M30T</div>
+        </div>
+        <div class="spec">
+          <div class="spec-l">Terrain</div>
+          <div class="spec-v">Any Cover</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <section id="gallery" style="background:#040603;padding:96px 0 0;">
+    <div class="gallery-header">
+      <p class="sec-label reveal">From the Air</p>
+      <h2 class="sec-h2 reveal">Aerial Capabilities</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gal-item"><img src="/Deer%20Recovery/1000043004.jpg" alt="Aerial view of rural property"></div>
+      <div class="gal-item"><img src="/Deer%20Recovery/1000043000.jpg" alt="Aerial photography"></div>
+      <div class="gal-item"><img src="/Deer%20Recovery/1000042999.jpg" alt="Commercial drone coverage"></div>
+    </div>
+  </section>
+
+  <!-- VIDEO SECTION -->
+  <section id="video-section">
+    <div class="reveal">
+      <p class="sec-label">See It In Action</p>
+      <h2 class="sec-h2">Drone Footage</h2>
+      <p style="font-size:15px;font-weight:300;color:var(--muted);max-width:480px;line-height:1.75;margin-top:10px;">Real footage captured by our fleet. See the precision and coverage that makes us the most effective recovery operation in the region.</p>
+    </div>
+    <div class="video-grid">
+
+      <div class="video-item reveal reveal-d1">
+        <video id="vid1" preload="metadata" playsinline>
+          <source src="/Deer%20Recovery/1000043005.mp4" type="video/mp4">
+        </video>
+        <div class="video-play-btn" id="playBtn1" onclick="playVideo('vid1','playBtn1')">
+          <div class="play-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#060904"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-item reveal reveal-d2">
+        <video id="vid2" preload="metadata" playsinline>
+          <source src="/Deer%20Recovery/1000043006.mp4" type="video/mp4">
+        </video>
+        <div class="video-play-btn" id="playBtn2" onclick="playVideo('vid2','playBtn2')">
+          <div class="play-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#060904"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="reveal">
+      <p class="sec-label">Herd Census</p>
+      <h2 class="sec-h2">Census Packages</h2>
+      <p style="font-size:15px;font-weight:300;color:var(--muted);max-width:480px;line-height:1.75;margin-top:10px;">Certified deer population data for your property. Three tiers — all include official census documentation.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <div class="p-card reveal reveal-d1">
+        <div class="p-tier">Package 01</div>
+        <div class="p-name">Basic</div>
+        <div class="p-divider"></div>
+        <ul class="p-features">
+          <li>Total Population Census</li>
+          <li>Interactive Mapping Integration</li>
+          <li>Official Census Certificate</li>
+        </ul>
+        <a href="tel:8123746987" class="p-cta">Get a Quote</a>
+      </div>
+
+      <div class="p-card featured reveal reveal-d2">
+        <div class="p-tier">Package 02</div>
+        <div class="p-name">Standard</div>
+        <div class="p-divider"></div>
+        <ul class="p-features">
+          <li>Total Population Census</li>
+          <li>Interactive Mapping Integration</li>
+          <li>Official Census Certificate</li>
+          <li>Buck to Doe Ratio</li>
+        </ul>
+        <a href="tel:8123746987" class="p-cta">Get a Quote</a>
+      </div>
+
+      <div class="p-card reveal reveal-d3">
+        <div class="p-tier">Package 03</div>
+        <div class="p-name">Premium</div>
+        <div class="p-divider"></div>
+        <ul class="p-features">
+          <li>Total Population Census</li>
+          <li>Interactive Mapping Integration</li>
+          <li>Official Census Certificate</li>
+          <li>Buck to Doe Ratio</li>
+          <li>Buck Photography</li>
+        </ul>
+        <a href="tel:8123746987" class="p-cta">Get a Quote</a>
+      </div>
+
+    </div>
+
+    <div class="pricing-note reveal">
+      <strong>Scheduling Info —</strong> Surveys cannot be booked more than 3 days in advance. Optimal results require overcast daytime conditions. Pilot reserves the right to reschedule based on weather patterns to ensure accuracy.
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <h2 class="cta-h2 reveal">
+      Don't Lose<br>
+      <span>Your Harvest.</span>
+    </h2>
+    <p class="cta-p reveal">Call immediately after the shot. We deploy fast — day or night.</p>
+    <a href="tel:8123746987" class="cta-phone reveal">(812) 374-6987</a>
+    <p class="cta-social reveal">@advanceddronerecovery</p>
+    <div class="cta-btns reveal">
+      <a href="tel:8123746987" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Call Now
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <div class="footer-logo-img">
+        <img src="/Deer%20Recovery/1000043002.jpg" alt="Advanced Drone Recovery">
+      </div>
+      <span class="footer-brand">Advanced Drone Recovery</span>
+    </div>
+    <div class="footer-copy">&copy; 2026 &nbsp;&middot;&nbsp; (812) 374-6987 &nbsp;&middot;&nbsp; @advanceddronerecovery</div>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => revealObs.observe(el));
+
+    // Video play toggle
+    function playVideo(videoId, btnId) {
+      const video = document.getElementById(videoId);
+      const btn = document.getElementById(btnId);
+      video.play();
+      btn.classList.add('hidden');
+      video.addEventListener('pause', () => btn.classList.remove('hidden'), { once: false });
+      video.addEventListener('ended', () => btn.classList.remove('hidden'), { once: false });
+    }
+  </script>
+
+</body>
+</html>
