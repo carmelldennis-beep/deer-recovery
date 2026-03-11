@@ -1339,6 +1339,190 @@
       flex-shrink: 0;
     }
 
+    /* ─── BRAND GATEWAY ─── */
+    #gateway {
+      height: 100vh;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gw-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: flex 0.6s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer;
+    }
+
+    #gateway:has(.gw-left:hover) .gw-right,
+    #gateway:has(.gw-right:hover) .gw-left { flex: 0.72; }
+    #gateway:has(.gw-left:hover) .gw-left,
+    #gateway:has(.gw-right:hover) .gw-right { flex: 1.28; }
+
+    .gw-bg {
+      position: absolute;
+      inset: -10px;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .gw-side:hover .gw-bg { transform: scale(1.06); }
+
+    .gw-overlay {
+      position: absolute;
+      inset: 0;
+      transition: opacity 0.4s;
+    }
+
+    .gw-left .gw-overlay {
+      background: linear-gradient(135deg, rgba(6,9,4,0.82) 0%, rgba(224,115,24,0.18) 100%);
+    }
+
+    .gw-right .gw-overlay {
+      background: linear-gradient(225deg, rgba(6,9,4,0.82) 0%, rgba(56,145,224,0.18) 100%);
+    }
+
+    .gw-left:hover .gw-overlay {
+      background: linear-gradient(135deg, rgba(6,9,4,0.6) 0%, rgba(224,115,24,0.32) 100%);
+    }
+
+    .gw-right:hover .gw-overlay {
+      background: linear-gradient(225deg, rgba(6,9,4,0.6) 0%, rgba(56,145,224,0.32) 100%);
+    }
+
+    .gw-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .gw-logo-wrap {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #fff;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-bottom: 4px;
+    }
+
+    .gw-left .gw-logo-wrap { box-shadow: 0 0 40px rgba(224,115,24,0.35); }
+    .gw-right .gw-logo-wrap { box-shadow: 0 0 40px rgba(56,145,224,0.35); }
+    .gw-left:hover .gw-logo-wrap { transform: scale(1.08); box-shadow: 0 0 70px rgba(224,115,24,0.55); }
+    .gw-right:hover .gw-logo-wrap { transform: scale(1.08); box-shadow: 0 0 70px rgba(56,145,224,0.55); }
+    .gw-logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+    .gw-brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 3.5vw, 52px);
+      letter-spacing: 0.04em;
+      color: var(--text);
+      line-height: 0.95;
+    }
+
+    .gw-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(237,233,226,0.5);
+    }
+
+    .gw-enter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      margin-top: 4px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .gw-left .gw-enter { color: var(--orange); }
+    .gw-right .gw-enter { color: var(--blue); }
+    .gw-side:hover .gw-enter { opacity: 1; transform: translateY(0); }
+
+    .gw-hud-tl { position:absolute;top:24px;left:24px;width:18px;height:18px;border-top:1px solid;border-left:1px solid;z-index:3; }
+    .gw-hud-bl { position:absolute;bottom:24px;left:24px;width:18px;height:18px;border-bottom:1px solid;border-left:1px solid;z-index:3; }
+    .gw-hud-tr { position:absolute;top:24px;right:24px;width:18px;height:18px;border-top:1px solid;border-right:1px solid;z-index:3; }
+    .gw-hud-br { position:absolute;bottom:24px;right:24px;width:18px;height:18px;border-bottom:1px solid;border-right:1px solid;z-index:3; }
+    .gw-left .gw-hud-tl, .gw-left .gw-hud-bl { border-color: rgba(224,115,24,0.5); }
+    .gw-right .gw-hud-tr, .gw-right .gw-hud-br { border-color: rgba(56,145,224,0.5); }
+
+    .gw-center {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      pointer-events: none;
+      gap: 0;
+    }
+
+    .gw-vline {
+      width: 1px;
+      height: 100px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
+    }
+
+    .gw-badge {
+      background: rgba(6,9,4,0.88);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(14px);
+      padding: 14px 20px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(237,233,226,0.45);
+      white-space: nowrap;
+      line-height: 1.8;
+    }
+
+    .gw-scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      animation: gwBob 2.2s ease-in-out infinite;
+    }
+
+    @keyframes gwBob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(7px); }
+    }
+
     /* ─── MOBILE ─── */
     @media (max-width: 900px) {
       nav { padding: 16px 20px; }
@@ -1365,20 +1549,61 @@
 </head>
 <body>
 
-  <!-- TOP BANNER -->
-  <div style="background:#050709;border-bottom:1px solid rgba(255,255,255,0.06);padding:9px 48px;display:flex;align-items:center;justify-content:center;gap:28px;position:relative;z-index:101;">
-    <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:rgba(237,233,226,0.35);">One Team. Two Brands.</span>
-    <span style="width:1px;height:14px;background:rgba(255,255,255,0.1);display:inline-block;"></span>
-    <a href="#home" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-      <span style="width:6px;height:6px;border-radius:50%;background:#E07318;display:inline-block;"></span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(237,233,226,0.55);">Advanced Drone Recovery</span>
+  <!-- BRAND GATEWAY -->
+  <section id="gateway">
+
+    <!-- Left: Recovery -->
+    <a href="#home" class="gw-side gw-left">
+      <div class="gw-bg" style="background-image:url('assets/1000043004.jpg');"></div>
+      <div class="gw-overlay"></div>
+      <div class="gw-hud-tl"></div>
+      <div class="gw-hud-bl"></div>
+      <div class="gw-content">
+        <div class="gw-logo-wrap">
+          <img src="assets/1000043002.jpg" alt="Advanced Drone Recovery">
+        </div>
+        <div class="gw-brand-name">Advanced<br>Drone Recovery</div>
+        <div class="gw-tag">Thermal &middot; Wildlife &middot; Census</div>
+        <div class="gw-enter">
+          Enter Recovery
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
     </a>
-    <span style="width:1px;height:14px;background:rgba(255,255,255,0.1);display:inline-block;"></span>
-    <a href="#media" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-      <span style="width:6px;height:6px;border-radius:50%;background:#3891E0;display:inline-block;"></span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(237,233,226,0.55);">Advanced Drone Media</span>
+
+    <!-- Center badge -->
+    <div class="gw-center">
+      <div class="gw-vline"></div>
+      <div class="gw-badge">One Team.<br>Two Brands.</div>
+      <div class="gw-vline"></div>
+    </div>
+
+    <!-- Right: Media -->
+    <a href="#media" class="gw-side gw-right">
+      <div class="gw-bg" style="background-image:url('assets/1000043001.jpg');"></div>
+      <div class="gw-overlay"></div>
+      <div class="gw-hud-tr"></div>
+      <div class="gw-hud-br"></div>
+      <div class="gw-content">
+        <div class="gw-logo-wrap">
+          <img src="assets/1000043025.jpg" alt="Advanced Drone Media">
+        </div>
+        <div class="gw-brand-name">Advanced<br>Drone Media</div>
+        <div class="gw-tag">Photo &middot; Video &middot; Events</div>
+        <div class="gw-enter">
+          Enter Media
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
     </a>
-  </div>
+
+    <!-- Scroll hint -->
+    <div class="gw-scroll-hint">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:rgba(237,233,226,0.28);">Scroll</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(237,233,226,0.28)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+
+  </section>
 
   <!-- NAV -->
   <nav id="mainNav">
@@ -1394,10 +1619,18 @@
     <ul class="nav-links">
       <li><a href="#services">Recovery</a></li>
       <li><a href="#pricing">Census</a></li>
-      <li><a href="#media" style="color:var(--blue)">Drone Media</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="tel:8123746987" style="color:var(--muted);">(812) 374-6987</a></li>
     </ul>
-    <a href="tel:8123746987" class="nav-cta">Call (812) 374-6987</a>
+    <a href="#media" class="nav-logo" style="text-decoration:none;">
+      <div class="nav-text" style="text-align:right;">
+        <span class="t1">Advanced</span>
+        <span class="t2" style="color:var(--blue);">Drone Media</span>
+      </div>
+      <div class="logo-wrap">
+        <img src="assets/1000043025.jpg" alt="Advanced Drone Media logo">
+      </div>
+    </a>
   </nav>
 
   <!-- HERO -->
