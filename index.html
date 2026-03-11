@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Drone Recovery — Thermal Deer Recovery</title>
+  <title>Advanced Drone Recovery & Advanced Drone Media</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -506,9 +506,7 @@
 
     .tech-img-wrap img {
       width: 100%;
-      height: 500px;
-      object-fit: cover;
-      object-position: top;
+      height: auto;
       display: block;
     }
 
@@ -950,6 +948,397 @@
     .reveal-d2 { transition-delay: 0.18s; }
     .reveal-d3 { transition-delay: 0.28s; }
 
+    /* ─── BRAND DIVIDER ─── */
+    .brand-divider {
+      position: relative;
+      background: #050709;
+      padding: 100px 48px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .brand-divider::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange) 30%, var(--blue) 70%, transparent);
+    }
+
+    .brand-divider::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 25%, var(--border) 75%, transparent);
+    }
+
+    .divider-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .brand-split {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .brand-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 0 60px;
+    }
+
+    .brand-logo-wrap {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-logo-wrap img {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+    }
+
+    .brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .brand-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 2px;
+    }
+
+    .brand-tag.recovery { color: var(--orange); border: 1px solid rgba(224,115,24,0.4); }
+    .brand-tag.media { color: var(--blue); border: 1px solid rgba(56,145,224,0.4); }
+
+    .brand-divider-line {
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(180deg, transparent, var(--border) 30%, var(--border) 70%, transparent);
+      flex-shrink: 0;
+    }
+
+    /* ─── MEDIA SECTION ─── */
+    :root {
+      --blue: #3891E0;
+      --blue-glow: rgba(56,145,224,0.12);
+    }
+
+    #media {
+      background: #060810;
+      position: relative;
+    }
+
+    .media-hero {
+      position: relative;
+      padding: 96px 48px 80px;
+      background: linear-gradient(135deg, #060810 0%, #08101A 100%);
+      border-bottom: 1px solid rgba(56,145,224,0.1);
+    }
+
+    .media-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(56,145,224,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .media-header {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 20px;
+    }
+
+    .media-logo-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(56,145,224,0.3);
+    }
+
+    .media-logo-wrap img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+    }
+
+    .media-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 7vw, 96px);
+      line-height: 0.9;
+      color: var(--text);
+    }
+
+    .media-heading .accent-blue { color: var(--blue); }
+
+    .media-sub {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(237,233,226,0.6);
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+
+    .media-sec-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .media-sec-label::before {
+      content: '';
+      width: 24px;
+      height: 1.5px;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .media-services {
+      background: #08101A;
+      padding: 80px 48px;
+      position: relative;
+    }
+
+    .media-services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 52px;
+      border: 1px solid rgba(56,145,224,0.1);
+    }
+
+    .msvc-card {
+      background: rgba(8,16,26,0.9);
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .msvc-card:hover { background: rgba(56,145,224,0.05); }
+
+    .msvc-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .msvc-card:hover::after { transform: scaleX(1); }
+
+    .msvc-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      line-height: 1;
+      color: rgba(56,145,224,0.07);
+      position: absolute;
+      top: 20px;
+      right: 28px;
+    }
+
+    .msvc-icon {
+      width: 44px;
+      height: 44px;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+
+    .msvc-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.03em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .msvc-desc {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    /* Media gallery */
+    .media-gallery {
+      background: #050709;
+      padding: 80px 0 0;
+    }
+
+    .media-gallery-header { padding: 0 48px 40px; }
+
+    .media-gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: 300px;
+      gap: 3px;
+    }
+
+    .mgal-item {
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .mgal-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.65s ease;
+      filter: saturate(0.8);
+    }
+
+    .mgal-item:hover img { transform: scale(1.05); filter: saturate(1); }
+
+    .mgal-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(6,8,16,0.65) 0%, transparent 55%);
+    }
+
+    /* Media CTA */
+    .media-cta {
+      background: #08101A;
+      padding: 96px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .media-cta::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(56,145,224,0.06) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .media-cta-h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(44px, 6vw, 80px);
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .media-cta-h2 span { color: var(--blue); }
+
+    .media-cta-p {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 380px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .btn-blue {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--blue);
+      padding: 15px 34px;
+      border-radius: 2px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 28px rgba(56,145,224,0.3);
+      position: relative;
+    }
+
+    .btn-blue:hover { background: #2778C4; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(56,145,224,0.4); }
+    .btn-blue:active { transform: translateY(0); }
+
+    /* Media marquee */
+    .media-marquee-wrap {
+      background: var(--blue);
+      padding: 11px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .media-marquee-track {
+      display: inline-flex;
+      animation: marquee 22s linear infinite;
+    }
+
+    .media-marquee-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      padding: 0 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .dot-blue {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+
     /* ─── MOBILE ─── */
     @media (max-width: 900px) {
       nav { padding: 16px 20px; }
@@ -958,13 +1347,19 @@
       .hud, .crosshair { display: none; }
       .sec { padding: 64px 20px; }
       #tech { grid-template-columns: 1fr; gap: 40px; padding: 64px 20px; }
-      .services-grid, .pricing-grid { grid-template-columns: 1fr; }
-      .gallery-grid { grid-template-columns: 1fr; height: auto; }
-      .gal-item { height: 220px; }
-      .gallery-header { padding: 0 20px 36px; }
+      .services-grid, .pricing-grid, .media-services-grid { grid-template-columns: 1fr; }
+      .gallery-grid, .media-gallery-grid { grid-template-columns: 1fr; height: auto; }
+      .gal-item, .mgal-item { height: 220px; }
+      .gallery-header, .media-gallery-header { padding: 0 20px 36px; }
       #gallery { padding-top: 64px; }
       #pricing, #cta { padding: 64px 20px; }
       footer { flex-direction: column; gap: 14px; text-align: center; padding: 28px 20px; }
+      .brand-divider { padding: 72px 20px; }
+      .brand-split { flex-direction: column; gap: 40px; }
+      .brand-divider-line { width: 80px; height: 1px; }
+      .brand-card { padding: 0 20px; }
+      .media-hero, .media-services, .media-cta { padding: 64px 20px; }
+      .media-header { flex-direction: column; align-items: flex-start; gap: 20px; }
     }
   </style>
 </head>
@@ -982,10 +1377,9 @@
       </div>
     </a>
     <ul class="nav-links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#tech">Technology</a></li>
-      <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#services">Recovery</a></li>
+      <li><a href="#pricing">Census</a></li>
+      <li><a href="#media" style="color:var(--blue)">Drone Media</a></li>
     </ul>
     <a href="tel:8123746987" class="nav-cta">Call (812) 374-6987</a>
   </nav>
@@ -1241,15 +1635,140 @@
     </div>
   </section>
 
+  <!-- BRAND DIVIDER -->
+  <div class="brand-divider reveal">
+    <p class="divider-eyebrow">One Team. Two Brands.</p>
+    <div class="brand-split">
+      <div class="brand-card">
+        <div class="brand-logo-wrap">
+          <img src="assets/1000043002.jpg" alt="Advanced Drone Recovery">
+        </div>
+        <div class="brand-name">Advanced<br>Drone Recovery</div>
+        <span class="brand-tag recovery">Thermal · Wildlife · Census</span>
+      </div>
+      <div class="brand-divider-line"></div>
+      <div class="brand-card">
+        <div class="brand-logo-wrap">
+          <img src="assets/1000043025.jpg" alt="Advanced Drone Media">
+        </div>
+        <div class="brand-name">Advanced<br>Drone Media</div>
+        <span class="brand-tag media">Photo · Video · Events</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVANCED DRONE MEDIA -->
+  <section id="media">
+
+    <!-- Media Hero -->
+    <div class="media-hero">
+      <div class="media-header reveal">
+        <div class="media-logo-wrap">
+          <img src="assets/1000043025.jpg" alt="Advanced Drone Media">
+        </div>
+        <div>
+          <p class="media-sec-label">Advanced Drone Media</p>
+          <h2 class="media-heading">Capture<br><span class="accent-blue">Every Moment.</span></h2>
+        </div>
+      </div>
+      <p class="media-sub reveal">Professional aerial photography and videography powered by the DJI Flip. From real estate to weddings, sports to corporate events — we bring the cinematic perspective your project deserves.</p>
+      <a href="tel:8123746987" class="btn-blue reveal">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Book a Shoot
+      </a>
+    </div>
+
+    <!-- Media Marquee -->
+    <div class="media-marquee-wrap">
+      <div class="media-marquee-track">
+        <span class="media-marquee-item">Aerial Photography <span class="dot-blue"></span> Real Estate Video <span class="dot-blue"></span> Sports & Events <span class="dot-blue"></span> Wedding Videography <span class="dot-blue"></span> DJI Flip <span class="dot-blue"></span> @advanceddronemedia <span class="dot-blue"></span></span>
+        <span class="media-marquee-item">Aerial Photography <span class="dot-blue"></span> Real Estate Video <span class="dot-blue"></span> Sports & Events <span class="dot-blue"></span> Wedding Videography <span class="dot-blue"></span> DJI Flip <span class="dot-blue"></span> @advanceddronemedia <span class="dot-blue"></span></span>
+      </div>
+    </div>
+
+    <!-- Media Services -->
+    <div class="media-services">
+      <p class="media-sec-label reveal">What We Offer</p>
+      <h2 class="sec-h2 reveal" style="color:var(--text);">Media Services</h2>
+      <div class="media-services-grid">
+
+        <div class="msvc-card reveal reveal-d1">
+          <span class="msvc-num">01</span>
+          <svg class="msvc-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <rect x="2" y="10" width="28" height="24" rx="2"/>
+            <path d="M30 16l10-6v24l-10-6V16z"/>
+            <circle cx="11" cy="22" r="5"/>
+          </svg>
+          <h3 class="msvc-title">Aerial Photography & Videography</h3>
+          <p class="msvc-desc">Stunning 4K aerial footage and high-resolution photography capturing your subject from perspectives no camera on the ground can match.</p>
+        </div>
+
+        <div class="msvc-card reveal reveal-d2">
+          <span class="msvc-num">02</span>
+          <svg class="msvc-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <rect x="4" y="8" width="36" height="28" rx="2"/>
+            <path d="M4 16h36"/>
+            <path d="M14 8v8"/>
+            <path d="M30 8v8"/>
+            <path d="M10 24h8M10 30h12"/>
+          </svg>
+          <h3 class="msvc-title">Real Estate Videography</h3>
+          <p class="msvc-desc">Make listings stand out with cinematic walkthroughs and aerial neighborhood sweeps. Properties with drone footage sell faster and for more.</p>
+        </div>
+
+        <div class="msvc-card reveal reveal-d3">
+          <span class="msvc-num">03</span>
+          <svg class="msvc-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <circle cx="22" cy="22" r="18"/>
+            <path d="M22 8v14l8 8"/>
+            <path d="M14 6l4 6M30 6l-4 6"/>
+          </svg>
+          <h3 class="msvc-title">Sports, Weddings & Events</h3>
+          <p class="msvc-desc">Capture the energy of game day, the beauty of your wedding, or the scale of your event from above. Dynamic, cinematic coverage for every occasion.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Media Portfolio -->
+    <div class="media-gallery">
+      <div class="media-gallery-header">
+        <p class="media-sec-label reveal">Our Work</p>
+        <h2 class="sec-h2 reveal" style="color:var(--text);">Portfolio</h2>
+      </div>
+      <div class="media-gallery-grid">
+        <div class="mgal-item"><img src="assets/1000043000.jpg" alt="Aerial photography"></div>
+        <div class="mgal-item"><img src="assets/1000042999.jpg" alt="Commercial aerial coverage"></div>
+        <div class="mgal-item"><img src="assets/1000043001.jpg" alt="Drone videography"></div>
+      </div>
+    </div>
+
+    <!-- Media CTA -->
+    <div class="media-cta">
+      <h2 class="media-cta-h2 reveal">Ready to Fly<br><span>Your Vision?</span></h2>
+      <p class="media-cta-p reveal">Powered by the DJI Flip. Available for shoots across the region.</p>
+      <div style="position:relative;">
+        <a href="tel:8123746987" style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0.06em;color:var(--text);text-decoration:none;display:block;margin-bottom:6px;transition:color 0.2s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">(812) 374-6987</a>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:36px;">@advanceddronemedia</p>
+        <a href="tel:8123746987" class="btn-blue reveal">Book a Shoot</a>
+      </div>
+    </div>
+
+  </section>
+
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">
+    <div class="footer-logo" style="gap:24px;">
       <div class="footer-logo-img">
         <img src="assets/1000043002.jpg" alt="Advanced Drone Recovery">
       </div>
-      <span class="footer-brand">Advanced Drone Recovery</span>
+      <div style="width:1px;height:32px;background:var(--border);"></div>
+      <div class="footer-logo-img">
+        <img src="assets/1000043025.jpg" alt="Advanced Drone Media">
+      </div>
+      <span class="footer-brand">Advanced Drone</span>
     </div>
-    <div class="footer-copy">&copy; 2026 &nbsp;&middot;&nbsp; (812) 374-6987 &nbsp;&middot;&nbsp; @advanceddronerecovery</div>
+    <div class="footer-copy">&copy; 2026 &nbsp;&middot;&nbsp; (812) 374-6987 &nbsp;&middot;&nbsp; @advanceddronerecovery &nbsp;&middot;&nbsp; @advanceddronemedia</div>
   </footer>
 
   <script>
